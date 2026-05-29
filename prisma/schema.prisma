@@ -204,6 +204,7 @@ model Bar {
   barAnalytics  BarAnalytics[]
   conversations Conversation[]
   claimRequests ClaimRequest[]
+  socialPosts   SocialPost[]
 
   @@map("business_bars")
 }
@@ -346,4 +347,21 @@ model AuditLog {
   @@index([userId, createdAt])
   @@index([action])
   @@map("business_audit_logs")
+}
+
+model SocialPost {
+  id           String    @id @default(cuid())
+  barId        String
+  bar          Bar       @relation(fields: [barId], references: [id], onDelete: Cascade)
+  platform     String    @default("INSTAGRAM")
+  content      String    @db.Text
+  imageUrl     String?
+  scheduledFor DateTime?
+  publishedAt  DateTime?
+  status       String    @default("DRAFT")
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  @@index([barId, status])
+  @@map("social_posts")
 }
