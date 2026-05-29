@@ -1,9 +1,9 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   const session = await getServerSession(authOptions);
   if (!session?.user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -12,7 +12,30 @@ export async function GET() {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
+  const claimStatus = req.nextUrl.searchParams.get("claimStatus");
+
+  const where: any = {};
+  if (claimStatus && claimStatus !== "all") {
+    where.claimStatus = claimStatus;
+  }
+
   const bars = await prisma.bar.findMany({
+    where,
+    select: {
+      id: true,
+      name: true,
+      address: true,
+      latitude: true,
+      longitude: true,
+      phone: true,
+      email: true,
+      website: true,
+      imageUrl: true,
+      isActive: true,
+      claimStatus: true,
+      createdAt: true,
+      updatedAt: true,
+    },
     orderBy: { createdAt: "desc" },
     take: 50,
   });

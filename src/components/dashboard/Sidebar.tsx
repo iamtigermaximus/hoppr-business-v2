@@ -4,7 +4,7 @@ import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
 import Link from "next/link";
 import styled from "styled-components";
-import { House, Tag, Ticket, ChartBar, Gear, SignOut, List, X, Buildings } from "@phosphor-icons/react";
+import { House, Tag, Ticket, ChartBar, Gear, SignOut, List, X, Buildings, Scales } from "@phosphor-icons/react";
 
 const SidebarNav = styled.aside<{ $open: boolean }>`
   position: fixed; top: 0; left: 0; bottom: 0; z-index: 50;
@@ -57,6 +57,7 @@ const navItems = [
 export function Sidebar() {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
+  const isAdmin = pathname.startsWith("/admin");
 
   return (
     <>
@@ -76,6 +77,15 @@ export function Sidebar() {
             </NavItem>
           );
         })}
+        {isAdmin && (
+          <NavItem
+            href="/admin/claims"
+            $active={pathname.startsWith("/admin/claims")}
+            onClick={() => setOpen(false)}
+          >
+            <Scales size={18} weight={pathname.startsWith("/admin/claims") ? "fill" : "regular"} /> Claims
+          </NavItem>
+        )}
         <div style={{ marginTop: "auto", padding: "0 12px" }}>
           <NavItem
             as="button"

@@ -87,6 +87,7 @@ async function main() {
         },
         amenities: ["Live Music", "Outdoor Terrace", "Pool Table", "Kitchen"],
         isActive: true,
+        claimStatus: "CLAIMED",
       },
     }),
     prisma.bar.create({
@@ -108,6 +109,7 @@ async function main() {
         },
         amenities: ["VIP Lounge", "Coat Check", "Smoking Terrace"],
         isActive: true,
+        claimStatus: "CLAIMED",
       },
     }),
     prisma.bar.create({
@@ -132,6 +134,7 @@ async function main() {
         },
         amenities: ["Craft Cocktails", "Small Plates", "Intimate Setting"],
         isActive: true,
+        claimStatus: "CLAIMED",
       },
     }),
     prisma.bar.create({
@@ -157,6 +160,7 @@ async function main() {
         },
         amenities: ["24 Taps", "Beer Garden", "Kitchen", "Dog Friendly"],
         isActive: true,
+        claimStatus: "CLAIMED",
       },
     }),
     prisma.bar.create({
@@ -182,6 +186,82 @@ async function main() {
         },
         amenities: ["20+ Screens", "Game-Day Specials", "Pool Tables", "Kitchen"],
         isActive: true,
+        claimStatus: "CLAIMED",
+      },
+    }),
+    // ── Unclaimed bars (for testing claiming flow) ─────────────────
+    prisma.bar.create({
+      data: {
+        name: "Molly Malone's Irish Pub",
+        description:
+          "Authentic Irish pub in the heart of Helsinki with live folk music, hearty pub food, and the best Guinness in town.",
+        address: "Kaisaniemenkatu 1C, 00100 Helsinki",
+        latitude: 60.1715,
+        longitude: 24.9475,
+        phone: "+358 9 5556789",
+        email: "info@mollymalones.fi",
+        website: "https://mollymalones.fi",
+        imageUrl: "https://images.unsplash.com/photo-1575037614876-c38a4d44f5b8?w=600",
+        hours: {
+          monday: { open: "14:00", close: "02:00" },
+          tuesday: { open: "14:00", close: "02:00" },
+          wednesday: { open: "14:00", close: "02:00" },
+          thursday: { open: "14:00", close: "03:00" },
+          friday: { open: "12:00", close: "04:00" },
+          saturday: { open: "12:00", close: "04:00" },
+          sunday: { open: "14:00", close: "00:00" },
+        },
+        amenities: ["Live Music", "Irish Whiskey Bar", "Pub Food", "Outdoor Seating"],
+        isActive: true,
+        claimStatus: "UNCLAIMED",
+      },
+    }),
+    prisma.bar.create({
+      data: {
+        name: "Skyline Rooftop Bar",
+        description:
+          "Stunning panoramic views of Helsinki from the 12th floor. Craft cocktails, small plates, and an unforgettable sunset experience.",
+        address: "Pohjoisesplanadi 23, 00130 Helsinki",
+        latitude: 60.168,
+        longitude: 24.951,
+        phone: "+358 9 4447890",
+        email: "hello@skylinerooftop.fi",
+        website: "https://skylinerooftop.fi",
+        imageUrl: "https://images.unsplash.com/photo-1470337458703-46ad1756a187?w=600",
+        hours: {
+          tuesday: { open: "16:00", close: "01:00" },
+          wednesday: { open: "16:00", close: "01:00" },
+          thursday: { open: "16:00", close: "02:00" },
+          friday: { open: "14:00", close: "03:00" },
+          saturday: { open: "14:00", close: "03:00" },
+          sunday: { open: "15:00", close: "23:00" },
+        },
+        amenities: ["Rooftop Terrace", "Craft Cocktails", "Small Plates", "Heated Lounge"],
+        isActive: true,
+        claimStatus: "UNCLAIMED",
+      },
+    }),
+    prisma.bar.create({
+      data: {
+        name: "Underground Vinyl Bar",
+        description:
+          "A hidden gem for vinyl lovers and cocktail enthusiasts. Curated DJ sets, rare records, and prohibition-era cocktails in an intimate setting.",
+        address: "Iso Roobertinkatu 17, 00120 Helsinki",
+        latitude: 60.1637,
+        longitude: 24.9384,
+        phone: "+358 9 3334567",
+        email: "spin@undergroundvinyl.fi",
+        website: "https://undergroundvinyl.fi",
+        imageUrl: "https://images.unsplash.com/photo-1553073095-ddcf4e2cf2f3?w=600",
+        hours: {
+          wednesday: { open: "18:00", close: "02:00" },
+          thursday: { open: "18:00", close: "02:00" },
+          friday: { open: "17:00", close: "04:00" },
+          saturday: { open: "17:00", close: "04:00" },
+        },
+        amenities: ["Vinyl DJ Sets", "Prohibition Cocktails", "Record Shop", "Intimate Setting"],
+        isActive: true,
+        claimStatus: "UNCLAIMED",
       },
     }),
   ]);
@@ -199,8 +279,8 @@ async function main() {
     ],
   });
 
-  // ── Also assign admin as manager of all bars ───────────────
-  for (const bar of bars) {
+  // ── Also assign admin as manager of the first 5 claimed bars ──
+  for (const bar of bars.slice(0, 5)) {
     await prisma.barManager.create({
       data: { userId: admin.id, barId: bar.id, role: "OWNER" },
     });

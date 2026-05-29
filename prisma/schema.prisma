@@ -194,6 +194,7 @@ model Bar {
   amenities   String[]  @default([])
   socialLinks Json?
   isActive    Boolean   @default(true)
+  claimStatus String    @default("UNCLAIMED")
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 
@@ -202,8 +203,32 @@ model Bar {
   managers      BarManager[]
   barAnalytics  BarAnalytics[]
   conversations Conversation[]
+  claimRequests ClaimRequest[]
 
   @@map("business_bars")
+}
+
+model ClaimRequest {
+  id          String    @id @default(cuid())
+  barId       String?
+  barName     String
+  barAddress  String?
+  barCity     String?
+  barType     String?
+  claimantName String?
+  claimantEmail String?
+  claimantPhone String?
+  notes       String?   @db.Text
+  status      String    @default("PENDING")
+  reviewedBy  String?
+  reviewedAt  DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  bar Bar? @relation(fields: [barId], references: [id])
+
+  @@index([status])
+  @@map("business_claim_requests")
 }
 
 model BarManager {
