@@ -1,24 +1,14 @@
-"use client";
-import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { redirect } from "next/navigation";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 
-export default function RootPage() {
-  const { data: session, status } = useSession();
-  const router = useRouter();
-
-  useEffect(() => {
-    if (status === "loading") return;
-    if (!session) { router.push("/login"); return; }
-    const role = (session.user as any)?.role;
-    if (role === "SUPER_ADMIN") router.push("/admin");
-    else if (role === "BAR_MANAGER") router.push("/dashboard");
-    else router.push("/login");
-  }, [session, status, router]);
-
-  return (
-    <div style={{ minHeight: "100dvh", display: "flex", alignItems: "center", justifyContent: "center", background: "#0a0a0a" }}>
-      <div style={{ color: "#737373" }}>Loading...</div>
-    </div>
-  );
+export default async function RootPage() {
+  const session = await getServerSession(authOptions);
+  if (!session?.user) {
+    redirect("/login");
+  }
+  const role = (session.user as any).role;
+  if (role === "SUPER_ADMIN") redirect("/admin");
+  if (role === "BAR_MANAGER") redirect("/dashboard");
+  redirect("/login");
 }
