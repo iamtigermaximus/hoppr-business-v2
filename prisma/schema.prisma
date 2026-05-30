@@ -198,13 +198,15 @@ model Bar {
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 
-  promotions    Promotion[]
-  passes        Pass[]
-  managers      BarManager[]
-  barAnalytics  BarAnalytics[]
-  conversations Conversation[]
-  claimRequests ClaimRequest[]
-  socialPosts   SocialPost[]
+  promotions     Promotion[]
+  passes         Pass[]
+  managers       BarManager[]
+  barAnalytics   BarAnalytics[]
+  conversations  Conversation[]
+  claimRequests  ClaimRequest[]
+  socialPosts    SocialPost[]
+  autoPilotRules AutoPilotRule[]
+  aiInsights     AIInsight[]
 
   @@map("business_bars")
 }
@@ -364,4 +366,39 @@ model SocialPost {
 
   @@index([barId, status])
   @@map("social_posts")
+}
+
+model AutoPilotRule {
+  id          String   @id @default(cuid())
+  barId       String
+  bar         Bar      @relation(fields: [barId], references: [id], onDelete: Cascade)
+  name        String
+  isEnabled   Boolean  @default(true)
+  triggerType String   @default("TIME_BASED")
+  triggerConfig Json?
+  actionType  String   @default("CREATE_PROMOTION")
+  actionConfig Json?
+  lastTriggeredAt DateTime?
+  cooldownHours   Int  @default(24)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([barId, isEnabled])
+  @@map("auto_pilot_rules")
+}
+
+model AIInsight {
+  id          String   @id @default(cuid())
+  barId       String
+  bar         Bar      @relation(fields: [barId], references: [id], onDelete: Cascade)
+  insightType String   @default("BEST_TIME")
+  title       String
+  description String
+  confidence  Float    @default(0.8)
+  isRead      Boolean  @default(false)
+  isActioned  Boolean  @default(false)
+  createdAt   DateTime @default(now())
+
+  @@index([barId, isRead])
+  @@map("ai_insights")
 }

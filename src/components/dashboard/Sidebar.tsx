@@ -4,7 +4,7 @@ import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
 import Link from "next/link";
 import styled from "styled-components";
-import { House, Tag, Ticket, ChartBar, Gear, SignOut, List, X, Buildings, Scales, Sparkle, PaperPlaneTilt } from "@phosphor-icons/react";
+import { House, Tag, Ticket, ChartBar, Gear, SignOut, List, X, Buildings, Scales, Sparkle, PaperPlaneTilt, Robot, Lightbulb } from "@phosphor-icons/react";
 
 const SidebarNav = styled.aside<{ $open: boolean }>`
   position: fixed; top: 0; left: 0; bottom: 0; z-index: 50;
@@ -53,6 +53,8 @@ const navItems = [
   { href: "/dashboard/promotions", label: "Promotions", icon: Tag },
   { href: "/dashboard/passes", label: "Passes", icon: Ticket },
   { href: "/dashboard/analytics", label: "Analytics", icon: ChartBar },
+  { href: "/dashboard/auto-pilot", label: "Auto-Pilot", icon: Robot },
+  { href: "/dashboard/insights", label: "Insights", icon: Lightbulb },
   { href: "/dashboard/settings", label: "Settings", icon: Gear },
 ];
 
