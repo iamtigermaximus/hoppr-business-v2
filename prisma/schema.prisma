@@ -45,6 +45,7 @@ model User {
   passPurchases    PassPurchase[]
   notifications    Notification[]
   barManagers      BarManager[]
+  barStaff         BarStaff[]
 
   @@map("users")
 }
@@ -201,12 +202,14 @@ model Bar {
   promotions     Promotion[]
   passes         Pass[]
   managers       BarManager[]
+  barStaff       BarStaff[]
   barAnalytics   BarAnalytics[]
   conversations  Conversation[]
   claimRequests  ClaimRequest[]
   socialPosts    SocialPost[]
   autoPilotRules AutoPilotRule[]
   aiInsights     AIInsight[]
+  contentApprovals ContentApproval[]
 
   @@map("business_bars")
 }
@@ -438,4 +441,41 @@ model ContentModeration {
   @@index([complianceStatus])
   @@index([entityType, entityId])
   @@map("content_moderation")
+}
+
+model BarStaff {
+  id          String   @id @default(cuid())
+  barId       String
+  bar         Bar      @relation(fields: [barId], references: [id], onDelete: Cascade)
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role        String   @default("STAFF")
+  permissions String[] @default([])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([barId, userId])
+  @@map("bar_staff")
+}
+
+model ContentApproval {
+  id              String    @id @default(cuid())
+  barId           String
+  bar             Bar       @relation(fields: [barId], references: [id], onDelete: Cascade)
+  entityType      String
+  entityId        String
+  title           String
+  description     String?
+  status          String    @default("PENDING")
+  createdBy       String
+  reviewedBy      String?
+  reviewedAt      DateTime?
+  rejectionReason String?   @db.Text
+  destinations    String[]  @default([])
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@index([barId, status])
+  @@index([status])
+  @@map("content_approvals")
 }

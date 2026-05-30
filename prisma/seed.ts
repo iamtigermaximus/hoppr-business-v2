@@ -16,7 +16,13 @@ async function main() {
   await prisma.notification.deleteMany();
   await prisma.promotion.deleteMany();
   await prisma.pass.deleteMany();
+  await prisma.socialPost.deleteMany();
+  await prisma.autoPilotRule.deleteMany();
+  await prisma.aIInsight.deleteMany();
   await prisma.barManager.deleteMany();
+  await prisma.barStaff.deleteMany();
+  await prisma.contentApproval.deleteMany();
+  await prisma.contentModeration.deleteMany();
   await prisma.barAnalytics.deleteMany();
   await prisma.conversationMessage.deleteMany();
   await prisma.conversation.deleteMany();
@@ -60,7 +66,17 @@ async function main() {
     },
   });
 
-  console.log("Created users:", admin.email, managerLoose.email, managerClubX.email);
+  const staffBarLoose = await prisma.user.create({
+    data: {
+      email: "staff@barloose.fi",
+      username: "staff_barloose",
+      passwordHash,
+      role: "BAR_MANAGER",
+      isAgeVerified: true,
+    },
+  });
+
+  console.log("Created users:", admin.email, managerLoose.email, managerClubX.email, staffBarLoose.email);
 
   // ── Bars ──────────────────────────────────────────────────────
   const bars = await Promise.all([
@@ -286,6 +302,17 @@ async function main() {
     });
   }
 
+  // ── Staff Members ──────────────────────────────────────────────
+  await prisma.barStaff.create({
+    data: {
+      userId: staffBarLoose.id,
+      barId: bars[0].id,
+      role: "STAFF",
+      permissions: ["CREATE_PROMOTIONS", "CREATE_SOCIAL_POSTS", "VIEW_ANALYTICS"],
+    },
+  });
+
+  console.log("Created bar staff assignments");
   console.log("Created bar manager assignments");
 
   // ── Promotions (2 per bar) ────────────────────────────────────

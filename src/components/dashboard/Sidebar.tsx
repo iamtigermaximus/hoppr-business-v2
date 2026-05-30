@@ -4,7 +4,7 @@ import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
 import Link from "next/link";
 import styled from "styled-components";
-import { House, Tag, Ticket, ChartBar, Gear, SignOut, List, X, Buildings, Scales, Sparkle, PaperPlaneTilt, Robot, Lightbulb, ShieldCheck } from "@phosphor-icons/react";
+import { House, Tag, Ticket, ChartBar, Gear, SignOut, List, X, Buildings, Scales, Sparkle, PaperPlaneTilt, Robot, Lightbulb, ShieldCheck, Users, Bell } from "@phosphor-icons/react";
 
 const SidebarNav = styled.aside<{ $open: boolean }>`
   position: fixed; top: 0; left: 0; bottom: 0; z-index: 50;
@@ -63,6 +63,15 @@ export function Sidebar() {
   const pathname = usePathname();
   const isAdmin = pathname.startsWith("/admin");
 
+  // Extract barSlug from pathname for bar-scoped nav items
+  const segments = pathname.split("/").filter(Boolean);
+  const barSlug =
+    segments[0] === "dashboard" &&
+    segments[1] &&
+    !["campaigns", "social", "promotions", "passes", "analytics", "auto-pilot", "insights", "settings", "staff", "approvals"].includes(segments[1])
+      ? segments[1]
+      : null;
+
   return (
     <>
       <MobileToggle onClick={() => setOpen(!open)}>
@@ -81,6 +90,24 @@ export function Sidebar() {
             </NavItem>
           );
         })}
+        {barSlug && (
+          <>
+            <NavItem
+              href={`/dashboard/${barSlug}/staff`}
+              $active={pathname.startsWith(`/dashboard/${barSlug}/staff`)}
+              onClick={() => setOpen(false)}
+            >
+              <Users size={18} weight={pathname.startsWith(`/dashboard/${barSlug}/staff`) ? "fill" : "regular"} /> Staff
+            </NavItem>
+            <NavItem
+              href={`/dashboard/${barSlug}/approvals`}
+              $active={pathname.startsWith(`/dashboard/${barSlug}/approvals`)}
+              onClick={() => setOpen(false)}
+            >
+              <Bell size={18} weight={pathname.startsWith(`/dashboard/${barSlug}/approvals`) ? "fill" : "regular"} /> Approvals
+            </NavItem>
+          </>
+        )}
         {isAdmin && (
           <>
             <NavItem
