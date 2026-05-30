@@ -4,7 +4,7 @@ import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
 import Link from "next/link";
 import styled from "styled-components";
-import { House, Tag, Ticket, ChartBar, Gear, SignOut, List, X, Buildings, Scales, Sparkle, PaperPlaneTilt, Robot, Lightbulb } from "@phosphor-icons/react";
+import { House, Tag, Ticket, ChartBar, Gear, SignOut, List, X, Buildings, Scales, Sparkle, PaperPlaneTilt, Robot, Lightbulb, ShieldCheck } from "@phosphor-icons/react";
 
 const SidebarNav = styled.aside<{ $open: boolean }>`
   position: fixed; top: 0; left: 0; bottom: 0; z-index: 50;
@@ -82,13 +82,22 @@ export function Sidebar() {
           );
         })}
         {isAdmin && (
-          <NavItem
-            href="/admin/claims"
-            $active={pathname.startsWith("/admin/claims")}
-            onClick={() => setOpen(false)}
-          >
-            <Scales size={18} weight={pathname.startsWith("/admin/claims") ? "fill" : "regular"} /> Claims
-          </NavItem>
+          <>
+            <NavItem
+              href="/admin/claims"
+              $active={pathname.startsWith("/admin/claims")}
+              onClick={() => setOpen(false)}
+            >
+              <Scales size={18} weight={pathname.startsWith("/admin/claims") ? "fill" : "regular"} /> Claims
+            </NavItem>
+            <NavItem
+              href="/admin/compliance"
+              $active={pathname.startsWith("/admin/compliance")}
+              onClick={() => setOpen(false)}
+            >
+              <ShieldCheck size={18} weight={pathname.startsWith("/admin/compliance") ? "fill" : "regular"} /> Compliance
+            </NavItem>
+          </>
         )}
         <div style={{ marginTop: "auto", padding: "0 12px" }}>
           <NavItem

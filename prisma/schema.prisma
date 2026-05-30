@@ -402,3 +402,40 @@ model AIInsight {
   @@index([barId, isRead])
   @@map("ai_insights")
 }
+
+model ComplianceRule {
+  id               String   @id @default(cuid())
+  ruleName         String
+  ruleCategory     String   @default("ALCOHOL")
+  description      String?
+  detectionKeywords String[]
+  severity         String   @default("FLAG")
+  isActive         Boolean  @default(true)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@map("compliance_rules")
+}
+
+model ContentModeration {
+  id               String    @id @default(cuid())
+  entityType       String
+  entityId         String
+  barId            String?
+  barName          String?
+  title            String
+  description      String?
+  imageUrl         String?
+  aiFlags          Json?
+  aiConfidence     Float?
+  complianceStatus String    @default("PENDING_REVIEW")
+  reviewedBy       String?
+  reviewedAt       DateTime?
+  rejectionReason  String?   @db.Text
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  @@index([complianceStatus])
+  @@index([entityType, entityId])
+  @@map("content_moderation")
+}
