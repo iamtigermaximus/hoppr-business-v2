@@ -4,7 +4,7 @@ import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
 import Link from "next/link";
 import styled from "styled-components";
-import { House, Tag, Ticket, ChartBar, Gear, SignOut, List, X, Buildings, Scales, Sparkle, PaperPlaneTilt, Robot, Lightbulb, ShieldCheck, Users, Bell, Funnel } from "@phosphor-icons/react";
+import { House, Tag, Ticket, ChartBar, Gear, SignOut, List, X, Buildings, Scales, Sparkle, PaperPlaneTilt, Robot, Lightbulb, ShieldCheck, Users, Bell, Funnel, QrCode, ChatsCircle, ClipboardText } from "@phosphor-icons/react";
 
 const SidebarNav = styled.aside<{ $open: boolean }>`
   position: fixed; top: 0; left: 0; bottom: 0; z-index: 50;
@@ -106,6 +106,20 @@ export function Sidebar() {
             >
               <Bell size={18} weight={pathname.startsWith(`/dashboard/${barSlug}/approvals`) ? "fill" : "regular"} /> Approvals
             </NavItem>
+            <NavItem
+              href={`/dashboard/${barSlug}/scan`}
+              $active={pathname.startsWith(`/dashboard/${barSlug}/scan`)}
+              onClick={() => setOpen(false)}
+            >
+              <QrCode size={18} weight={pathname.startsWith(`/dashboard/${barSlug}/scan`) ? "fill" : "regular"} /> Scanner
+            </NavItem>
+            <NavItem
+              href={`/dashboard/${barSlug}/messages`}
+              $active={pathname.startsWith(`/dashboard/${barSlug}/messages`)}
+              onClick={() => setOpen(false)}
+            >
+              <ChatsCircle size={18} weight={pathname.startsWith(`/dashboard/${barSlug}/messages`) ? "fill" : "regular"} /> Messages
+            </NavItem>
           </>
         )}
         {isAdmin && (
@@ -130,6 +144,13 @@ export function Sidebar() {
               onClick={() => setOpen(false)}
             >
               <Funnel size={18} weight={pathname.startsWith("/admin/crm") ? "fill" : "regular"} /> CRM
+            </NavItem>
+            <NavItem
+              href="/admin/audit"
+              $active={pathname.startsWith("/admin/audit")}
+              onClick={() => setOpen(false)}
+            >
+              <ClipboardText size={18} weight={pathname.startsWith("/admin/audit") ? "fill" : "regular"} /> Audit Log
             </NavItem>
           </>
         )}
