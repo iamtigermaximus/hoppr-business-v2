@@ -180,21 +180,26 @@ model VerificationToken {
 // ============================================================
 
 model Bar {
-  id          String    @id @default(cuid())
-  name        String
-  description String?   @db.Text
-  address     String
-  latitude    Float
-  longitude   Float
-  phone       String?
-  email       String?
-  website     String?
-  imageUrl    String?
-  gallery     String[]  @default([])
-  hours       Json?
-  amenities   String[]  @default([])
-  socialLinks Json?
-  isActive    Boolean   @default(true)
+  id               String    @id @default(cuid())
+  name             String
+  description      String?   @db.Text
+  address          String
+  latitude         Float
+  longitude        Float
+  phone            String?
+  email            String?
+  website          String?
+  imageUrl         String?
+  barType          String?
+  logoUrl          String?
+  coverImageUrl    String?
+  notificationPrefs Json?
+  gallery          String[]  @default([])
+  galleryImages    String[]  @default([])
+  hours            Json?
+  amenities        String[]  @default([])
+  socialLinks      Json?
+  isActive         Boolean   @default(true)
   claimStatus     String    @default("UNCLAIMED")
   leadStatus      String    @default("LEAD")
   contactName     String?
@@ -286,6 +291,10 @@ model Pass {
   barId         String
   imageUrl      String?
   price         Float
+  type          String    @default("SKIP_LINE")
+  originalPrice Float?
+  maxPerUser    Int?
+  benefits      String[]  @default([])
   validFrom     DateTime
   validUntil    DateTime
   maxQuantity   Int?
@@ -294,9 +303,22 @@ model Pass {
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
-  bar Bar @relation(fields: [barId], references: [id], onDelete: Cascade)
+  bar          Bar              @relation(fields: [barId], references: [id], onDelete: Cascade)
+  redemptions  PassRedemption[]
 
   @@map("business_passes")
+}
+
+model PassRedemption {
+  id          String   @id @default(cuid())
+  passId      String
+  pass        Pass     @relation(fields: [passId], references: [id], onDelete: Cascade)
+  userId      String?
+  redeemedAt  DateTime @default(now())
+  redeemedBy  String?
+  method      String   @default("APP")
+  status      String   @default("VALID")
+  @@map("pass_redemptions")
 }
 
 model BarAnalytics {
