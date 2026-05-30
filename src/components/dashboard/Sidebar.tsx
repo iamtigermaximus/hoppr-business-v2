@@ -4,7 +4,7 @@ import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
 import Link from "next/link";
 import styled from "styled-components";
-import { House, Tag, Ticket, ChartBar, Gear, SignOut, List, X, Buildings, Scales, Sparkle, PaperPlaneTilt, Robot, Lightbulb, ShieldCheck, Users, Bell } from "@phosphor-icons/react";
+import { House, Tag, Ticket, ChartBar, Gear, SignOut, List, X, Buildings, Scales, Sparkle, PaperPlaneTilt, Robot, Lightbulb, ShieldCheck, Users, Bell, Funnel } from "@phosphor-icons/react";
 
 const SidebarNav = styled.aside<{ $open: boolean }>`
   position: fixed; top: 0; left: 0; bottom: 0; z-index: 50;
@@ -123,6 +123,13 @@ export function Sidebar() {
               onClick={() => setOpen(false)}
             >
               <ShieldCheck size={18} weight={pathname.startsWith("/admin/compliance") ? "fill" : "regular"} /> Compliance
+            </NavItem>
+            <NavItem
+              href="/admin/crm"
+              $active={pathname.startsWith("/admin/crm")}
+              onClick={() => setOpen(false)}
+            >
+              <Funnel size={18} weight={pathname.startsWith("/admin/crm") ? "fill" : "regular"} /> CRM
             </NavItem>
           </>
         )}

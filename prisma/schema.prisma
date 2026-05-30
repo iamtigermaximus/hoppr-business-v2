@@ -195,9 +195,16 @@ model Bar {
   amenities   String[]  @default([])
   socialLinks Json?
   isActive    Boolean   @default(true)
-  claimStatus String    @default("UNCLAIMED")
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  claimStatus     String    @default("UNCLAIMED")
+  leadStatus      String    @default("LEAD")
+  contactName     String?
+  contactEmail    String?
+  contactPhone    String?
+  lastContactedAt DateTime?
+  nextFollowUpAt  DateTime?
+  leadAssignedTo  String?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
 
   promotions     Promotion[]
   passes         Pass[]
